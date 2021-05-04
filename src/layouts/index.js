@@ -1,5 +1,12 @@
 import { Layout, Menu, Breadcrumb, message } from 'antd';
-import { UserOutlined, LaptopOutlined, LogoutOutlined } from '@ant-design/icons';
+import {
+  UserOutlined,
+  LaptopOutlined,
+  LogoutOutlined,
+  FileTextOutlined,
+  CreditCardOutlined,
+  CommentOutlined,
+} from '@ant-design/icons';
 import { useLocation, history } from 'umi';
 import './index.css';
 import axios from 'axios';
@@ -92,6 +99,18 @@ const BasicLayout = props => {
               </SubMenu>
               <SubMenu key="sub2" icon={<UserOutlined />} title="用户审核">
                 <Menu.Item key="5" onClick={() => {handleJump('/user')}}>用户审核</Menu.Item>
+              </SubMenu>
+              <SubMenu key="sub3" icon={<FileTextOutlined />} title="交通票出票">
+                <Menu.Item key="6" onClick={() => {handleJump('/train')}}>火车票</Menu.Item>
+                <Menu.Item key="7" onClick={() => {handleJump('/flight')}}>机票</Menu.Item>
+              </SubMenu>
+              <SubMenu key="sub4" icon={<CreditCardOutlined />} title="用户资金">
+                <Menu.Item key="8" onClick={() => {handleJump('/cashout')}}>提现申请</Menu.Item>
+                <Menu.Item key="9" onClick={() => {handleJump('/refund')}}>退款申请</Menu.Item>
+                <Menu.Item key="10" onClick={() => {handleJump('/debt')}}>欠款用户</Menu.Item>
+              </SubMenu>
+              <SubMenu key="sub5" icon={<CommentOutlined />} title="用户反馈">
+                <Menu.Item key="11" onClick={() => {handleJump('/feedback')}}>用户反馈</Menu.Item>
               </SubMenu>
             </Menu>
           </Sider>
