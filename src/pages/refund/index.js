@@ -77,7 +77,7 @@ export default function Flight() {
       }
     }).then(res => res.data)
       .then(res => {
-        setList(res.data.filter(item => !JSON.parse(item.msg).ticket));
+        setList(res.data);
         console.log(res);
       })
       .catch(err => {

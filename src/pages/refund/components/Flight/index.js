@@ -113,6 +113,7 @@ const Flight = props => {
         msg: JSON.stringify({
           ...msg,
           refund: price,
+          ticket: undefined,
         })
       }
     }).then(res => res.data)

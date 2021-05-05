@@ -60,7 +60,7 @@ const Train = props => {
             orderId: query.id,
             userId: order.userId,
             msg: JSON.stringify({
-              type: 2,
+              type: 3,
               msg: '您的火车票票订单退款失败，已将订单退回已支付状态'
             })
           }
@@ -113,6 +113,7 @@ const Train = props => {
         msg: JSON.stringify({
           ...msg,
           refund: price,
+          ticket: undefined,
         })
       }
     }).then(res => res.data)
@@ -141,7 +142,7 @@ const Train = props => {
                   orderId: query.id,
                   userId: order.userId,
                   msg: JSON.stringify({
-                    type: 2,
+                    type: 3,
                     msg: '您的火车票订单退款成功，退回金额为'+price+'元，退回至账户余额',
                   })
                 }
