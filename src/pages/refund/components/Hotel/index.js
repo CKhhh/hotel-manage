@@ -61,8 +61,8 @@ const Hotel = props => {
             orderId: query.id,
             userId: order.userId,
             msg: JSON.stringify({
-              type: 3,
-              msg: '您的火车票票订单退款失败，已将订单退回已支付状态'
+              type: 0,
+              msg: '您的民宿订单退款失败，已将订单退回已支付状态'
             })
           }
         }).then(res => res.data)
@@ -91,7 +91,58 @@ const Hotel = props => {
         money: Number(price),
       }
     })
+      .then(res => res.data)
+      .then(res => {
+        return updateHotelStatus();
+      })
+  }
+
+  const getHouseDetail = () => {
+    return axios('/api/hotel/detail', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'token': localStorage.getItem('admin')
+      },
+      data: {
+        id: order.houseId,
+      }
+    })
       .then(res => res.data);
+  }
+
+  const updateHouseOwnerMoney = () => {
+    return getHouseDetail().then(res => {
+      const owner = res.data.owner;
+      return axios('/api/user/updateMoney', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'token': localStorage.getItem('admin')
+        },
+        data: {
+          userId: owner,
+          money: 0 - Number(price),
+        }
+      }).then(res => res.data);
+    })
+  }
+
+  const updateHotelStatus = () => {
+    return updateHouseOwnerMoney().then(res => {
+      return axios('/api/hotel/changeStatus', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'token': localStorage.getItem('admin')
+        },
+        data: {
+          id: order.houseId,
+          status: 1,
+        }
+      })
+        .then(res => res.data);
+    })
   }
 
   const handleRefund = () => {
@@ -143,8 +194,8 @@ const Hotel = props => {
                   orderId: query.id,
                   userId: order.userId,
                   msg: JSON.stringify({
-                    type: 3,
-                    msg: '您的火车票订单退款成功，退回金额为'+price+'元，退回至账户余额',
+                    type: 0,
+                    msg: '您的民宿订单退款成功，退回金额为'+price+'元，退回至账户余额',
                   })
                 }
               }).then(res => res.data)
