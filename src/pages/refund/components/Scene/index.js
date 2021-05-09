@@ -113,6 +113,7 @@ const Scene = props => {
         msg: JSON.stringify({
           ...msg,
           refund: price,
+          used: 1,
         })
       }
     }).then(res => res.data)
