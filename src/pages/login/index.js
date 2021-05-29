@@ -44,7 +44,7 @@ const Login = props => {
   }
 
   return (
-    <Card title="管理员登录" headStyle={{textAlign: 'center', fontWeight: 'bold'}} style={{ width: 500, height: 300, margin: '200px auto', boxShadow: '5px 5px 5px #888888' }}>
+    <Card title="管理员登录" headStyle={{textAlign: 'center', fontWeight: 'bold'}} style={{ width: 500, height: 300, borderRadius: '10px', margin: '200px auto', boxShadow: '5px 5px 10px #888888' }}>
       <Input
         className="user-input"
         size="large"

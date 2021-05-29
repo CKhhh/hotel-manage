@@ -17,6 +17,7 @@ import { history, useLocation } from 'umi';
 import axios from 'axios';
 
 import './index.less';
+import dayjs from 'dayjs';
 
 const statusInfo = {
   0: '待审核',
@@ -37,6 +38,8 @@ const statusColor = {
 const Hotel = props => {
   const { query } = useLocation();
   const [hotel, setHotel] = useState({});
+  const [info, setInfo] = useState({});
+  const [update, setUpdate] = useState({});
 
   const handleConfirm = status => {
     axios('/api/hotel/changeStatus', {
@@ -50,8 +53,28 @@ const Hotel = props => {
         status,
       }
     }).then(res => {
-      message.success('提交审核结果成功');
-      location.reload();
+      axios('/api/notify/addNotify', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'token': localStorage.getItem('admin')
+        },
+        data: {
+          userId: hotel.owner,
+          msg: JSON.stringify({
+            type: 0,
+            msg: status !== 4 ? '您的民宿（'+ hotel.name +'）已通过审核' : '您的民宿（'+ hotel.name +'）未通过审核'
+          })
+        }
+      }).then(res => res.data)
+        .then(res => {
+          console.log(res);
+          message.success('提交审核结果成功');
+          setUpdate({});
+        })
+        .catch(err => {
+          console.error('err');
+        })
     }).catch(err => {
       console.error(err);
       message.error('提交审核结果失败');
@@ -72,11 +95,20 @@ const Hotel = props => {
       .then(res => {
         console.log(res);
         setHotel(res.data);
+        let msg = {};
+        try {
+          msg = JSON.parse(res.data.info);
+        } catch (e) {
+          msg = {
+            info: res.data.info,
+          };
+        }
+        setInfo(msg);
       })
       .catch(err => {
         console.error(err);
       })
-  }, [])
+  }, [update])
 
   return (
     <>
@@ -131,18 +163,18 @@ const Hotel = props => {
               <Descriptions.Item label="民宿名称">{hotel.name}</Descriptions.Item>
               <Descriptions.Item label="民宿城市">{hotel.city}</Descriptions.Item>
               <Descriptions.Item label="民宿地址">{hotel.address}</Descriptions.Item>
-              <Descriptions.Item label="起租时间">{hotel.startTime ? `${new Date(hotel.startTime)}` : '-'}</Descriptions.Item>
+              <Descriptions.Item label="起租时间">{hotel.startTime ? `${dayjs(new Date(hotel.startTime)).format('YYYY-MM-DD')}` : '-'}</Descriptions.Item>
               <Descriptions.Item label="截止时间" span={2}>
-                {hotel.endTime ? `${new Date(hotel.endTime)}` : '-'}
+                {hotel.endTime ? `${dayjs(new Date(hotel.endTime)).format('YYYY-MM-DD')}` : '-'}
               </Descriptions.Item>
               <Descriptions.Item label="民宿状态" span={3}>
                 <Badge status={statusColor[hotel.status]} text={statusInfo[hotel.status]} />
               </Descriptions.Item>
               <Descriptions.Item label="民宿价格">&yen;{hotel.price}/晚</Descriptions.Item>
-              <Descriptions.Item label="发布时间">{hotel.publishTime ? `${new Date(hotel.publishTime)}` : '-'}</Descriptions.Item>
+              <Descriptions.Item label="发布时间">{hotel.publishTime ? `${dayjs(new Date(hotel.publishTime)).format('YYYY-MM-DD')}` : '-'}</Descriptions.Item>
               <Descriptions.Item label="民宿ID">{hotel.id}</Descriptions.Item>
               <Descriptions.Item label="民宿简介">
-                {hotel.info}
+                {info.info}
               </Descriptions.Item>
             </Descriptions>
           </Col>
